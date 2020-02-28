@@ -82,9 +82,6 @@ class ParseGaussian:
 # gauss_ob.do_parsing()
 
 
-#  ------------------------------------------------------
-
-
 class DVR:
     def __init__(self, dvrgrid, potentials, mu):
         """
@@ -180,12 +177,12 @@ def use_dimer_files(numb_files, filenameEs, fname_save_interpE, fname_savewfns):
         wfn_data = dvr_ob.run_dvr()
         np.save(file=fname_savewfns + str(i), arr=wfn_data)
 
-    return wfn_data
+    return None
 
 
 parse_inst = ParseGaussian("dimer_gaussian_data_run2/gauss_dimer_output2_txt", 18, 16)
 parse_inst.do_parsing()
-#creates files to me used in call below
+#creates files to be used in call below
 
 """ standard OH grid for passing """
 grid_arr = np.load(file="dimer_r4oh2.npy")  # peep the 2
@@ -193,12 +190,6 @@ grid_arr *= 1.88973  # angst -> bohr: gaussian gives angst, dvr needs bohr
 
 
 run = use_dimer_files(18, "dimer_Es2_", "interpd_dimer_E2_", "dimer_dvrwfns2_")
-
-
-
-
-
-
 
 
 # if __name__ == '__main__':
