@@ -64,22 +64,17 @@ class ParseGaussian:
             """ separate by oo steps and save """
             a = self.num_oh_steps - self.num_oh_steps
             b = self.num_oh_steps
-            np.save(arr=new_oh[0:self.num_oh_steps], file="dimer_r4oh2")  # saves copy of how steps
+            np.save(arr=new_oh[0:self.num_oh_steps], file="dimer_r4oh3")  # EDIT EACH TRIAL!
 
             real_oo = np.zeros(self.num_oo_steps)  # real_oo includes one of each OO position
             for i in range(1, self.num_oo_steps + 1):
-                np.save(arr=new_eng[a:b], file="dimer_Es2_" + str(i))
+                np.save(arr=new_eng[a:b], file="dimer_Es3_" + str(i))  # EDIT EACH TRIAL!
                 real_oo[i - 1] = new_oo[(i - 1) * self.num_oh_steps]
                 a += self.num_oh_steps
                 b += self.num_oh_steps
-            np.save(arr=real_oo, file="oo_steps_dimer2")
+            np.save(arr=real_oo, file="oo_steps_dimer3")  # EDIT EACH TRIAL!
 
         return None
-
-
-# call for parsing
-# gauss_ob = ParseGaussian(filename="h2o_dimer_gaussian_summary", 18, 16)
-# gauss_ob.do_parsing()
 
 
 class DVR:
@@ -171,7 +166,7 @@ def use_dimer_files(numb_files, filenameEs, fname_save_interpE, fname_savewfns):
         interp_ob = Interpolate1D(grid_arr, engy_file, 2000)  # grid_arr is hard coded
         new_xOH, new_yE = interp_ob.get_interp()
         np.save(file=fname_save_interpE + str(i), arr=new_yE)
-        np.save(file="xOH", arr=new_xOH)  # saved in bohr
+        np.save(file="xOH3", arr=new_xOH)  # saved in bohr
 
         dvr_ob = DVR(new_xOH, new_yE, 1728.3085005881399)
         wfn_data = dvr_ob.run_dvr()
@@ -180,16 +175,17 @@ def use_dimer_files(numb_files, filenameEs, fname_save_interpE, fname_savewfns):
     return None
 
 
-parse_inst = ParseGaussian("dimer_gaussian_data_run2/gauss_dimer_output2_txt", 18, 16)
-parse_inst.do_parsing()
+# parse_inst = ParseGaussian("dimer_gaussian_data_run2/gauss_dimer_output2_txt", 18, 16)
+# parse_inst = ParseGaussian("dimer_gaussian_data_run3/gauss_dimer_output3_txt", 18, 16)
+# parse_inst.do_parsing()
 #creates files to be used in call below
 
 """ standard OH grid for passing """
-grid_arr = np.load(file="dimer_r4oh2.npy")  # peep the 2
+grid_arr = np.load(file="dimer_r4oh3.npy")  # EDIT EACH TRIAL
 grid_arr *= 1.88973  # angst -> bohr: gaussian gives angst, dvr needs bohr
 
 
-run = use_dimer_files(18, "dimer_Es2_", "interpd_dimer_E2_", "dimer_dvrwfns2_")
+run = use_dimer_files(18, "dimer_Es3_", "interpd_dimer_E3_", "dimer_dvrwfns3_")
 
 
 # if __name__ == '__main__':
