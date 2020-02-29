@@ -44,9 +44,8 @@ class DVRAnalysis:
             sigma = np.sqrt(expval2 - (expval ** 2))
             plt.plot(self.oo_vals[ct], sigma, "ro")
             ct += 1
-        plt.xlabel("$R_{OO} (\AA)$")
-        plt.ylabel("$\sigma_{\Psi{OH}}$")
-        # plt.savefig(fname="dimer_stddev_vs_oo_fig", dpi=250)
+        plt.xlabel("$R_{OO}$ $(\AA)$")
+        plt.ylabel("$\sigma_{\Psi{OH}}$ $(\AA)$")
         plt.show()
 
     def calc_psi_max(self):
@@ -66,7 +65,9 @@ class DVRAnalysis:
 
 
 
-exp_ob = DVRAnalysis(18, "dimer_dvrwfns2_", "xOH.npy", "oo_steps_dimer2.npy")
+exp_ob = DVRAnalysis(18, "dimer_gaussian_data_run3/dimer_dvrwfns3_", "dimer_gaussian_data_run3/xOH3.npy", "dimer_gaussian_data_run3/oo_steps_dimer3.npy")
+# exp_ob = DVRAnalysis(18, "dimer_gaussian_data_run2/dimer_dvrwfns2_", "dimer_gaussian_data_run1/xOH2.npy", "dimer_gaussian_data_run2/oo_steps_dimer2.npy")
+
 exp_ob.calc_expvals()
 exp_ob.calc_stand_dev()
 exp_ob.calc_psi_max()
@@ -74,12 +75,11 @@ exp_ob.calc_psi_max()
 #  -------------------------------------------------------------------
 
 
-
 def wfn_plot(numb_wfns):
     for i in range(1, numb_wfns + 1):
-        a = np.load(file="dimer_dvrwfns2_" + str(i) + ".npy")
-        psi = a[:, 0]
-        x = np.load(file="xOH.npy")
+        a = np.load(file="dimer_gaussian_data_run3/dimer_dvrwfns3_" + str(i) + ".npy")
+        psi = a[:, 0] ** 2
+        x = np.load(file="dimer_gaussian_data_run3/xOH3.npy")
         x /= 1.88973
         plt.ylabel("$P$")
         plt.xlabel("$r_{OH}$ $(\AA)$")
@@ -90,23 +90,40 @@ def wfn_plot(numb_wfns):
 foo = wfn_plot(16)
 
 
-def potential_plots(n_oos):
+def potential_plots(n_oos, n_ohs):
+
+    all_engs = np.zeros(n_oos * n_ohs)
+    a = n_ohs - n_ohs
+    b = n_ohs
+
     for i in range(1, n_oos + 1):
-        a = np.load(file="dimer_Es2_" + str(i) + ".npy")
-        a *= 219474.63
-        a -= np.amin(a)
+        eng = np.load(file="dimer_gaussian_data_run3/dimer_Es3_" + str(i) + ".npy")
+        # eng = np.load(file="dimer_gaussian_data_run2/dimer_Es2_" + str(i) + ".npy")
 
-        x = np.load(file="dimer_r4OH2.npy")
+        all_engs[a:b] = eng
+        a += n_ohs
+        b += n_ohs
+    min = np.amin(all_engs)
 
-        plt.plot(x, a)
+    for i in range(1, n_oos + 1):
+        engs = np.load(file="dimer_gaussian_data_run3/dimer_Es3_" + str(i) + ".npy")
+        # engs = np.load(file="dimer_gaussian_data_run2/dimer_Es2_" + str(i) + ".npy")
+
+        engs -= min
+        engs *= 219474.63
+        x = np.load(file="dimer_gaussian_data_run3/dimer_r4oh3.npy")
+        # x = np.load(file="dimer_gaussian_data_run2/dimer_r4oh2.npy")
+
+        plt.plot(x, engs)
         plt.xlabel("$r_{OH}$ $(\AA)$")
         plt.ylabel("$cm^{-1}$")
-        plt.ylim([0, 10000])
-        plt.show()
+        # plt.ylim([0, 7500])
+    plt.show()
     return None
 
 
-food = potential_plots(18)
+food = potential_plots(18, 16)
+print("k")
 
 
 
