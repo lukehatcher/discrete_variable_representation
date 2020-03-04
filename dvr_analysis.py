@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+plt.rcParams.update({'font.size': 15})
 
 
 class DVRAnalysis:
@@ -46,7 +47,9 @@ class DVRAnalysis:
             ct += 1
         plt.xlabel("$R_{OO}$ $(\AA)$")
         plt.ylabel("$\sigma_{\Psi{OH}}$ $(\AA)$")
+        # plt.savefig(fname="sigma33", dpi=500, bbox_inches="tight")   ##### delete
         plt.show()
+        return None
 
     def calc_psi_max(self):
         for i in range(1, self.nwfns + 1):
@@ -55,10 +58,11 @@ class DVRAnalysis:
             psi = np.absolute(psi)  # correct for phase
             psi_max_loc = np.argmax(psi)
             coord_psi_max = self.x[psi_max_loc]
+            # plt.rcParams.update({'font.size': 15})
             plt.plot(self.oo_vals[i - 1], coord_psi_max, "bo")
         plt.xlabel("$R_{OO} (\AA)$")
         plt.ylabel("$r_{OH} (\AA)$ of $\Psi^{max}$")
-        # plt.savefig(fname="dimer_psimax_vs_oo_fig", dpi=250)
+        # plt.savefig(fname="psi_max33", dpi=500, bbox_inches="tight")  ##### delete
         plt.show()
         return None
 
@@ -66,37 +70,45 @@ class DVRAnalysis:
 
 
 exp_ob = DVRAnalysis(18, "dimer_gaussian_data_run3/dimer_dvrwfns3_", "dimer_gaussian_data_run3/xOH3.npy", "dimer_gaussian_data_run3/oo_steps_dimer3.npy")
-# exp_ob = DVRAnalysis(18, "dimer_gaussian_data_run2/dimer_dvrwfns2_", "dimer_gaussian_data_run1/xOH2.npy", "dimer_gaussian_data_run2/oo_steps_dimer2.npy")
+# exp_ob = DVRAnalysis(18, "dimer_gaussian_data_run2/dimer_dvrwfns2_", "dimer_gaussian_data_run2/xOH2.npy", "dimer_gaussian_data_run2/oo_steps_dimer2.npy")
+# exp_ob = DVRAnalysis(16, "dimer_gaussian_data_run1/dimer_dvrwfns_", "dimer_gaussian_data_run1/xOH1.npy", "dimer_gaussian_data_run1/oo_steps_dimer.npy")
+
 
 exp_ob.calc_expvals()
 exp_ob.calc_stand_dev()
 exp_ob.calc_psi_max()
 
 #  -------------------------------------------------------------------
+list = [1, 9, 18]
+#  -------------------------------------------------------------------
 
 
 def wfn_plot(numb_wfns):
-    for i in range(1, numb_wfns + 1):
+    # for i in range(1, numb_wfns + 1)
+    for i in list:
         a = np.load(file="dimer_gaussian_data_run3/dimer_dvrwfns3_" + str(i) + ".npy")
         psi = a[:, 0] ** 2
         x = np.load(file="dimer_gaussian_data_run3/xOH3.npy")
         x /= 1.88973
         plt.ylabel("$P$")
         plt.xlabel("$r_{OH}$ $(\AA)$")
-        plt.plot(x, psi)
+        plt.plot(x, psi, label= "OO dist." + str(i))
+    plt.legend()
+    # plt.savefig(fname="wfns3_3", dpi=500, bbox_inches="tight")  ##### delete
     plt.show()
     return None
 
 foo = wfn_plot(16)
 
 
-def potential_plots(n_oos, n_ohs):
 
+def potential_plots(n_oos, n_ohs):
     all_engs = np.zeros(n_oos * n_ohs)
     a = n_ohs - n_ohs
     b = n_ohs
 
-    for i in range(1, n_oos + 1):
+    # for i in range(1, n_oos + 1):
+    for i in list:
         eng = np.load(file="dimer_gaussian_data_run3/dimer_Es3_" + str(i) + ".npy")
         # eng = np.load(file="dimer_gaussian_data_run2/dimer_Es2_" + str(i) + ".npy")
 
@@ -105,26 +117,27 @@ def potential_plots(n_oos, n_ohs):
         b += n_ohs
     min = np.amin(all_engs)
 
-    for i in range(1, n_oos + 1):
+    # for i in range(1, n_oos + 1):
+    for i in list:
         engs = np.load(file="dimer_gaussian_data_run3/dimer_Es3_" + str(i) + ".npy")
         # engs = np.load(file="dimer_gaussian_data_run2/dimer_Es2_" + str(i) + ".npy")
-
         engs -= min
         engs *= 219474.63
         x = np.load(file="dimer_gaussian_data_run3/dimer_r4oh3.npy")
         # x = np.load(file="dimer_gaussian_data_run2/dimer_r4oh2.npy")
 
-        plt.plot(x, engs)
+        plt.plot(x, engs, label="OO dist. " + str(i))
         plt.xlabel("$r_{OH}$ $(\AA)$")
         plt.ylabel("$cm^{-1}$")
-        # plt.ylim([0, 7500])
+        plt.ylim([0, 2000])
+        plt.xlim([.7, 1.5])
+    plt.legend()
     plt.show()
     return None
 
 
+
+
+
 food = potential_plots(18, 16)
-print("k")
-
-
-
 
