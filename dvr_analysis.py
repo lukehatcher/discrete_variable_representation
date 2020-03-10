@@ -1,4 +1,5 @@
 import numpy as np
+from scipy import interpolate
 import matplotlib.pyplot as plt
 plt.rcParams.update({'font.size': 15})
 
@@ -77,7 +78,7 @@ class DVRAnalysis:
 
 exp_ob = DVRAnalysis(18, "dimer_gaussian_data_run5/dimer_dvrwfns5_", "dimer_gaussian_data_run5/xOH5.npy", "dimer_gaussian_data_run5/oo_steps_dimer5.npy")
 exp_ob.calc_expvals()
-exp_ob.expvals_vs_roo()
+# exp_ob.expvals_vs_roo()
 exp_ob.calc_stand_dev()
 exp_ob.calc_psi_max()
 
@@ -101,8 +102,7 @@ def wfn_plot(numb_wfns):
     plt.show()
     return None
 
-# foo = wfn_plot(120)
-
+foo = wfn_plot(120)
 
 
 def potential_plots(n_oos, n_ohs):
@@ -135,8 +135,54 @@ def potential_plots(n_oos, n_ohs):
     plt.show()
     return None
 
-
-# food = potential_plots(18, 120)
-
+food = potential_plots(18, 120)
 
 
+def minimum_vs_oo(n_points, n):
+    """ interp pots to 2k"""
+    oo_grid = np.load(file="dimer_gaussian_data_run5/oo_steps_dimer5.npy")
+    mins_list = []
+    for i in range(1, n + 1):
+        pots = np.load(file="dimer_gaussian_data_run5/dimer_Es5_" + str(i) + ".npy")
+        a = np.amin(pots)
+        mins_list.append(a)
+        minE = min(mins_list)
+
+    for i in range(1, n + 1):
+        pots_b4 = np.load(file="dimer_gaussian_data_run5/dimer_Es5_" + str(i) + ".npy")
+        pots_b4 -= minE
+        pots_b4 *= 219474.63
+
+        oh_grid = np.load(file="dimer_gaussian_data_run5/xOH5.npy")
+        oh_grid_ext = np.linspace(start=np.amin(oh_grid), stop=np.amax(oh_grid), num=len(pots_b4), endpoint=True)
+        f = interpolate.interp1d(oh_grid_ext, pots_b4, kind="cubic")
+
+        new_oh = np.linspace(start=np.amin(oh_grid), stop=np.amax(oh_grid), num=n_points, endpoint=True)
+        new_pots = f(new_oh)
+
+        minimum_e_index = np.argmin(new_pots)
+        plt.plot(oo_grid[i - 1], new_oh[minimum_e_index], "bo")
+
+    plt.xlabel("$r_{OO}$ $(\AA)$")
+    plt.ylabel("$(\AA)$")
+    plt.show()
+
+    return new_pots, oh_grid_ext
+
+
+a = minimum_vs_oo(2000, 18)
+
+
+def freq_vs_oo(n):
+    oo_grid = np.load(file="dimer_gaussian_data_run5/oo_steps_dimer5.npy")
+    for i in range(1, n + 1):
+        evals = np.load(file="dimer_gaussian_data_run5/dimer_evals5_" + str(i) + ".npy")
+        eng = evals[1] - evals[0]
+        eng *= 219474.63
+        plt.plot(oo_grid[i - 1], eng, "go")
+    plt.xlabel("$r_{OO}$ $(\AA)$")
+    plt.ylabel("$cm^{-1}$")
+    plt.show()
+    return
+
+b = freq_vs_oo(18)
