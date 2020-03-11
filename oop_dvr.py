@@ -64,15 +64,15 @@ class ParseGaussian:
             """ separate by oo steps and save """
             a = self.num_oh_steps - self.num_oh_steps
             b = self.num_oh_steps
-            np.save(arr=new_oh[0:self.num_oh_steps], file="dimer_r4oh3")  # EDIT EACH TRIAL!
+            np.save(arr=new_oh[0:self.num_oh_steps], file="dimer_r4oh5")  # EDIT EACH TRIAL!
 
             real_oo = np.zeros(self.num_oo_steps)  # real_oo includes one of each OO position
             for i in range(1, self.num_oo_steps + 1):
-                np.save(arr=new_eng[a:b], file="dimer_Es3_" + str(i))  # EDIT EACH TRIAL!
+                np.save(arr=new_eng[a:b], file="dimer_Es5_" + str(i))  # EDIT EACH TRIAL!
                 real_oo[i - 1] = new_oo[(i - 1) * self.num_oh_steps]
                 a += self.num_oh_steps
                 b += self.num_oh_steps
-            np.save(arr=real_oo, file="oo_steps_dimer3")  # EDIT EACH TRIAL!
+            np.save(arr=real_oo, file="oo_steps_dimer5")  # EDIT EACH TRIAL!
 
         return None
 
@@ -112,14 +112,8 @@ class DVR:
         v_matrix = self.pot_energy()
         kinetic_energy = self.kinetic_energy()
         evals, wfns_vecs = np.linalg.eigh(v_matrix + kinetic_energy)
-        # np.save(file="dimer_dvrwfns_" + str(param.dvr_numb), arr=wfns_vecs)  ##############
 
-        """ now plot """
-        # plt.plot((self.dvrgrid * 0.529177), wfns_vecs[:, 0] ** 2)  # plotting in angstrom
-        # plt.title("$\\Psi^2$")
-        # plt.show()
-
-        return wfns_vecs
+        return wfns_vecs, evals
 
 
 class Interpolate1D:
@@ -165,27 +159,27 @@ def use_dimer_files(numb_files, filenameEs, fname_save_interpE, fname_savewfns):
         engy_file = np.load(file=filenameEs + str(i) + ".npy")
         interp_ob = Interpolate1D(grid_arr, engy_file, 2000)  # grid_arr is hard coded
         new_xOH, new_yE = interp_ob.get_interp()
-        np.save(file=fname_save_interpE + str(i), arr=new_yE)
-        np.save(file="xOH3", arr=new_xOH)  # saved in bohr
+        # np.save(file=fname_save_interpE + str(i), arr=new_yE)
+        # np.save(file="xOH5", arr=new_xOH)  # saved in bohr  # EDIT EACH TIME
 
         dvr_ob = DVR(new_xOH, new_yE, 1728.3085005881399)
-        wfn_data = dvr_ob.run_dvr()
+        wfn_data, eval_data = dvr_ob.run_dvr()
         np.save(file=fname_savewfns + str(i), arr=wfn_data)
+
 
     return None
 
 
-# parse_inst = ParseGaussian("dimer_gaussian_data_run2/gauss_dimer_output2_txt", 18, 16)
-# parse_inst = ParseGaussian("dimer_gaussian_data_run3/gauss_dimer_output3_txt", 18, 16)
-# parse_inst.do_parsing()
-#creates files to be used in call below
+parse_inst = ParseGaussian("dimer_gaussian_data_run5/gauss_dimer_output5_txt", 18, 120)
+parse_inst.do_parsing()
+# creates files to be used in call below
 
 """ standard OH grid for passing """
-grid_arr = np.load(file="dimer_r4oh3.npy")  # EDIT EACH TRIAL
+grid_arr = np.load(file="dimer_gaussian_data_run5/dimer_r4oh5.npy")  # EDIT EACH TRIAL
 grid_arr *= 1.88973  # angst -> bohr: gaussian gives angst, dvr needs bohr
-
-
-run = use_dimer_files(18, "dimer_Es3_", "interpd_dimer_E3_", "dimer_dvrwfns3_")
+#
+#
+run = use_dimer_files(18, "dimer_Es5_", "interpd_dimer_E5_", "dimer_wfns5_")
 
 
 # if __name__ == '__main__':
