@@ -1,0 +1,90 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{braket}
+% \usepackage[utf8]{inputenc}
+\newcommand{\angstrom}{\mbox{\normalfont\AA}}
+\begin{document}
+
+\title{Discrete Variable Representation Introduction and Derivation}
+\author{Luke Hatcher}
+\date{University of Washington: Department of Chemistry \\ McCoy Group, Winter 2020}
+\maketitle
+
+
+\section{Discrete Variable Representation}
+\subsection{Introduction}
+Discrete Variable Representation (DVR) solves the time independent Schrodinger equation.  
+\subsection{Basis functions}
+For DVR, a finite set of basis functions must be chosen. 
+For this case our set $\{\phi_i\}_N$ belongs to a space such that they satisfy
+\begin{equation}
+\braket{\phi_i|\phi_j} = \delta_{ij}
+\end{equation}
+and thus are orthonormal.  
+It follows that we can represent our wavefunction as
+\begin{equation}
+\psi=\sum_i{c_i}\phi_i
+\end{equation}
+
+\begin{equation}
+c_i = \braket{\phi_i|\psi}
+\end{equation}
+
+\subsection{Matrix Representations}
+Starting from the time independent Schrodinger equation
+\begin{equation}
+\hat{H}\psi = E\psi
+\end{equation}
+recall that
+\begin{equation}
+\hat{H}=\hat{T}+\hat{V}
+\end{equation}
+We want to represent our Hamiltonian as the sum of two matrices.
+Thanks to Colbert and Miller, the matrix elements of the kinetic energy matrix are analytically known.$^{[1]}$
+\begin{equation}
+\hat{\textbf{T}}_{ij} = \frac{\hbar^2(-1)^{i-j}}{2m\Delta{x^2}}
+\begin{cases}
+\frac{\pi^2}{3}, &i=j\\
+\frac{2}{(i-j)^2}, &i\neq{j}
+\end{cases}
+\end{equation}
+It follows that the potential energy matrix is diagonal. 
+\begin{equation}
+\hat{\textbf{V}}_{ij}=\delta_{ij}V(x_i)
+\end{equation}
+Here the grid points $x_i$ are evenly spaced by $\Delta{x}$ and the size of the grid is appropriately large so that the wavefunction tends to zero at both ends.
+Doing so will represent an interval of $(-\infty, \infty)$.
+As a reminder, the number of grid points is equal to the Gaussian 09 input for scan points along the bond of interest. 
+For example 120 points along the shared OH as mentioned in section 1.3.
+Likewise, the potential at each point $V(x_i)$ is provided by Gaussian 09.
+Now, we can add our kinetic and potential matrix representations together to get our Hamiltonian matrix.
+\begin{equation}
+\hat{\textbf{H}}=\hat{\textbf{T}}+\hat{\textbf{V}}
+\end{equation}
+
+\subsection{Solving for $\psi$}
+Now all that remains is an eigenvalue problem.
+\begin{equation}
+\hat{\textbf{H}}\psi=\epsilon_n\psi
+\end{equation}
+
+\begin{equation}
+(\hat{\textbf{H}}-\epsilon_\lambda\textbf{I})\psi=0
+\end{equation}
+Nontrivial solutions exist when 
+\begin{equation}
+det(\hat{\textbf{H}}-\epsilon_\lambda\textbf{I})=0
+\end{equation}
+which after solving provides us with our desired energy eigenvalues $\epsilon_n$ and thus their respected eigenvectors $\psi$.
+
+\section{References}
+[1] D. T. Colbert and W. H. Miller, J. Chem. Phys. 96, 1982 (1992).
+
+
+
+
+\end{document}
+
+
+
