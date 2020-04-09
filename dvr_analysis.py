@@ -138,7 +138,7 @@ def potential_plots(n_oos, n_ohs):
 food = potential_plots(18, 120)
 
 
-def minimum_vs_oo(n_points, n):
+def re_vs_oo(n_points, n):
     """ interp pots to 2k"""
     oo_grid = np.load(file="dimer_gaussian_data_run5/oo_steps_dimer5.npy")
     mins_list = []
@@ -146,14 +146,15 @@ def minimum_vs_oo(n_points, n):
         pots = np.load(file="dimer_gaussian_data_run5/dimer_Es5_" + str(i) + ".npy")
         a = np.amin(pots)
         mins_list.append(a)
-        minE = min(mins_list)
+    minE = min(mins_list)
 
     for i in range(1, n + 1):
         pots_b4 = np.load(file="dimer_gaussian_data_run5/dimer_Es5_" + str(i) + ".npy")
         pots_b4 -= minE
-        pots_b4 *= 219474.63
+        pots_b4 *= 219474.63  # hartree -> cm^-1
 
         oh_grid = np.load(file="dimer_gaussian_data_run5/xOH5.npy")
+        oh_grid *= 0.529177  # bohr -> ang
         oh_grid_ext = np.linspace(start=np.amin(oh_grid), stop=np.amax(oh_grid), num=len(pots_b4), endpoint=True)
         f = interpolate.interp1d(oh_grid_ext, pots_b4, kind="cubic")
 
@@ -161,16 +162,21 @@ def minimum_vs_oo(n_points, n):
         new_pots = f(new_oh)
 
         minimum_e_index = np.argmin(new_pots)
+        listx = [3, 4, 5, 6, 7, 9, 10, 11]
+        if i in listx:  # debugging purposes
+            print(str(np.argmin(new_pots)) + " " + str(i))
+            print(str(new_oh[minimum_e_index]) + " " + str(i))
         plt.plot(oo_grid[i - 1], new_oh[minimum_e_index], "bo")
 
     plt.xlabel("$r_{OO}$ $(\AA)$")
-    plt.ylabel("$(\AA)$")
+    plt.ylabel("$r_{e}$ $(\AA)$")
+    plt.grid()
     plt.show()
 
     return new_pots, oh_grid_ext
 
 
-a = minimum_vs_oo(2000, 18)
+a = re_vs_oo(2000, 18)
 
 
 def freq_vs_oo(n):
