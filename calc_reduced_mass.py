@@ -1,11 +1,6 @@
-import numpy as np
-a = np.load(file="protonated_clusters/oo_steps_dimer.npy")
-print(a)
-
-
 def get_reduced_mass(m1, m2):
     """
-    calculate reduced mass in atomic units given two atoms
+    given two atoms, calculate their reduced mass in atomic units
     :param m1: mass first atom in amu
     :type m1: float
     :param m2: mass second atom in amu
@@ -21,9 +16,11 @@ def get_reduced_mass(m1, m2):
     return mu
 
 
-"""common masses"""
+"""commonly used masses"""
 m_hydrogen = 1.00784
 m_oxygen = 15.999
+m_carbon = 12.0107
+m_nitrogen = 14.0067
 
-# soln = get_reduced_mass(m_hydrogen, m_oxygen)
+#soln = get_reduced_mass(m_oxygen, m_oxygen)
 
