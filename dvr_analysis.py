@@ -11,7 +11,7 @@ class DVRAnalysis:
                  oo_fname
                  ):
         """
-        calc expectation values <O^hat> and <O^Hat**2> for position operator given wfns
+        calc expectation values <O^hat> and <O^Hat**2> for position operator given wavefunction vectors
         :param nwfns: number of wave functions
         :type nwfns: int
         :param wfn_fname: filename of wfn data to use EXCLUDE EXTENSION
@@ -83,26 +83,37 @@ exp_ob.calc_stand_dev()
 exp_ob.calc_psi_max()
 
 #  -------------------------------------------------------------------
-list = [1, 9, 18]
-#  -------------------------------------------------------------------
 
 
-def wfn_plot(numb_wfns):
-    # for i in range(1, numb_wfns + 1)
-    for i in list:
-        a = np.load(file="dimer_gaussian_data_run5/dimer_dvrwfns5_" + str(i) + ".npy")
+def wfn_plot(numb_wfns, dir_fname, wfn_fname, xgrid_fname, savename):
+    """
+    plot psi^2
+    :param numb_wfns:
+    :type numb_wfns: int
+    :param dir_fname:
+    :type dir_fname: str
+    :param wfn_fname:
+    :type wfn_fname: str
+    :param xgrid_fname:
+    :type xgrid_fname: str
+    :param savename:
+    :type savename: str
+    """
+
+    for i in range(1, numb_wfns + 1)
+        a = np.load(file= dir_fname + "/" + wfn_fname + str(i) + ".npy")
         psi = a[:, 0] ** 2
-        x = np.load(file="dimer_gaussian_data_run5/xOH5.npy")
-        x /= 1.88973
+        x = np.load(file=dir_fname + "/" + xgrid_fname + ".npy")
+        x /= 1.88973  # unit conversion
         plt.ylabel("$P$")
         plt.xlabel("$r_{OH}$ $(\AA)$")
         plt.plot(x, psi, label="OO dist." + str(i))
     plt.legend()
-    # plt.savefig(fname="wfns3_3", dpi=500, bbox_inches="tight")  ##### delete
+    plt.savefig(fname=savename, dpi=500, bbox_inches="tight")
     plt.show()
     return None
 
-foo = wfn_plot(120)
+
 
 
 def potential_plots(n_oos, n_ohs):
