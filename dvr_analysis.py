@@ -88,15 +88,15 @@ exp_ob.calc_psi_max()
 def wfn_plot(numb_wfns, dir_fname, wfn_fname, xgrid_fname, savename):
     """
     plot psi^2
-    :param numb_wfns:
+    :param numb_wfns: number of wfns vectors
     :type numb_wfns: int
-    :param dir_fname:
+    :param dir_fname: directort where wfn vectors are stored
     :type dir_fname: str
-    :param wfn_fname:
+    :param wfn_fname: generic file name where wfn vectors are stored
     :type wfn_fname: str
-    :param xgrid_fname:
+    :param xgrid_fname: file name of dvr x grid
     :type xgrid_fname: str
-    :param savename:
+    :param savename: desired file name for saved plots
     :type savename: str
     """
 
